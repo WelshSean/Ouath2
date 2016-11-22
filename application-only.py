@@ -1,6 +1,10 @@
 import os
 import urllib
 import base64
+import requests
+
+# URL to HTTP POST to in order to get a bearer token
+TWITTER_BEARER_URL = 'https://api.twitter.com/oauth2/token/'
 
 def getCreds():
     """
@@ -23,8 +27,28 @@ def encodeConsumerInfo(key, secret):
     string = urllib.quote_plus(key) + ":" + urllib.quote_plus(secret)
     return base64.b64encode(bytes(string))
 
+def obtainBearerToken(consumerCreds):
+    headers = { 'Authorization' : 'Basic ' + consumerCreds  ,
+                'Content-Type' : 'application/x-www-form-urlencoded;charset=UTF-8'}
+    payload = urllib.urlencode({'grant_type' : 'client_credentials'})
+    print "Headers: " + str(headers)
+
+    r = requests.post(TWITTER_BEARER_URL, headers = headers, params = payload)
+
+    print "RESPONSE: " + str(r.status_code)
+
+    responseJSON = r.json()
+
+    if responseJSON["token_type"] == "bearer":
+        print "w00t"
+        return responseJSON["access_token"]
+    else:
+        print "boo"
+
+
 
 if __name__ == "__main__":
-
-    a =  getCreds()
-    print encodeConsumerInfo(a[0], a[1])
+    creds =  getCreds()
+    encodedCreds = encodeConsumerInfo(creds[0], creds[1])
+    bearerToken = obtainBearerToken(encodedCreds)
+    print "Bearer token: " + str(bearerToken)
