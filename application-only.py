@@ -5,6 +5,7 @@ import requests
 
 # URL to HTTP POST to in order to get a bearer token
 TWITTER_BEARER_URL = 'https://api.twitter.com/oauth2/token/'
+TWITTER_USERTIMELINE_URL = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
 
 def getCreds():
     """
@@ -46,9 +47,20 @@ def obtainBearerToken(consumerCreds):
         print "boo"
 
 
+def getTweets(bearerToken):
+    headers = { "Authorization" : "Bearer " + bearerToken}
+    payload = { "screen_name" : "WelshSeanSter"}
+
+    r = requests.get(TWITTER_USERTIMELINE_URL, headers = headers, params=urllib.urlencode(payload))
+    print "RESPONSE: " + str(r.status_code)
+    print r.text
+    #return r.json()
+
+
 
 if __name__ == "__main__":
     creds =  getCreds()
     encodedCreds = encodeConsumerInfo(creds[0], creds[1])
     bearerToken = obtainBearerToken(encodedCreds)
     print "Bearer token: " + str(bearerToken)
+    print getTweets(bearerToken)
