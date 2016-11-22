@@ -49,12 +49,12 @@ def obtainBearerToken(consumerCreds):
 
 def getTweets(bearerToken):
     headers = { "Authorization" : "Bearer " + bearerToken}
-    payload = { "screen_name" : "WelshSeanSter"}
+    payload = { "screen_name" : "Merlolilou"}
 
     r = requests.get(TWITTER_USERTIMELINE_URL, headers = headers, params=urllib.urlencode(payload))
     print "RESPONSE: " + str(r.status_code)
     print r.text
-    #return r.json()
+    return r.json()
 
 
 
@@ -63,4 +63,7 @@ if __name__ == "__main__":
     encodedCreds = encodeConsumerInfo(creds[0], creds[1])
     bearerToken = obtainBearerToken(encodedCreds)
     print "Bearer token: " + str(bearerToken)
-    print getTweets(bearerToken)
+    print ""
+    print ""
+    print ""
+    print "Janets last tweet was :" + str(getTweets(bearerToken)[0]["text"])
